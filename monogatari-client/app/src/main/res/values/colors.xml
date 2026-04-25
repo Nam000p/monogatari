@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="page_background">#F4F1EA</color>
+    <color name="vintage_accent">#8B5E3C</color>
+    <color name="text_charcoal">#2D2D2D</color>
+    <color name="text_sub_vintage">#7C766B</color>
+    <color name="input_background">#FFFEFC</color>
+</resources>

@@ -1,0 +1,60 @@
+@startuml monogatari-system-architecture
+title MONOGATARI APP - SYSTEM ARCHITECTURE (LOCAL STORAGE)
+!theme plain
+skinparam componentStyle uml2
+skinparam linetype ortho
+skinparam nodesep 50
+skinparam ranksep 40
+
+' Optimized for A4 Vertical Layout
+top to bottom direction
+
+package "External Cloud Services" #Yellow {
+    [Stripe API (Payment)] as Stripe
+}
+
+package "Spring Boot Backend (Java)" #LightGreen {
+    [Controller Layer (REST)] as Controller
+    [Security / JWT Filter] as Security
+    [Service Layer (Business Logic)] as Service
+    [JPA Repository] as JpaRepo
+    
+    ' Local storage on the same server machine
+    folder "Local File System" #LightGray {
+        [Manga & Novel Assets] as FileStorage
+    }
+}
+
+database "MySQL Database" as MySQL #Orange
+
+node "Local Area Network (LAN)" #White {
+    interface "REST API / JSON" as API
+}
+
+package "Android Mobile Client (Java)" #LightBlue {
+    [Retrofit Client] as Retrofit
+    [Repository (Data Strategy)] as AndroidRepo
+    database "Room DB (Local Cache)" as Room
+    [ViewModel (State Management)] as VM
+    [UI Layer (Activity/Fragment)] as UI
+}
+
+' Server-side flows
+Stripe <--> Service : "Payments"
+Service <-right-> FileStorage : "Read/Write Files"
+Controller <-down-> Security
+Security <-down-> Service
+Service <-down-> JpaRepo
+JpaRepo <-down-> MySQL
+
+' Connection flow
+Controller <-down-> API
+
+' Client-side flows
+API <-down-> Retrofit
+Retrofit <-down-> AndroidRepo
+AndroidRepo <-left-> Room : "Sync & Offline"
+AndroidRepo <-down-> VM
+VM <-down-> UI
+
+@endum

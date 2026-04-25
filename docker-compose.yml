@@ -1,0 +1,34 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: monogatari-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: user 
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_LOCAL_PORT}:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init-sql:/docker-entrypoint-initdb.d
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  stripe-tunnel:
+    image: stripe/stripe-cli:latest
+    container_name: monogatari-stripe-cli
+    command: >
+      listen --forward-to https://host.docker.internal:8443/api/v1/payments/webhook 
+      --skip-verify
+      --api-key ${STRIPE_API_KEY}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  db_data:

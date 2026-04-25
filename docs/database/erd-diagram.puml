@@ -1,0 +1,174 @@
+@startuml monogatari-app-erd
+title MONOGATARI APP - FULL ECOSYSTEM ERD
+!theme plain
+skinparam Linetype ortho
+skinparam nodesep 30
+skinparam ranksep 40
+skinparam shadowing false
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+
+entity "User" as user {
+    *id: BIGINT <<PK>>
+    --
+    username: VARCHAR(50)
+    email: VARCHAR(100)
+    password: VARCHAR(255)
+    avatar_url: VARCHAR(255)
+    role: VARCHAR(20)
+    status: VARCHAR(20)
+    stripe_customer_id: VARCHAR(100)
+    premium_expired_date: TIMESTAMP
+    created_at: TIMESTAMP
+}
+
+entity "SubscriptionPlan" as plan {
+    *id: BIGINT <<PK>>
+    --
+    name: VARCHAR(50)
+    description: TEXT
+    original_price: DECIMAL(10,2)
+    discount_price: DECIMAL(10,2)
+    duration_days: INT
+    is_active: BOOLEAN
+}
+
+entity "Transaction" as transaction {
+    *id: BIGINT <<PK>>
+    --
+    user_id: BIGINT <<FK>>
+    plan_id: BIGINT <<FK>>
+    stripe_session_id: VARCHAR(255)
+    amount: DECIMAL(10,2)
+    currency: VARCHAR(10)
+    status: VARCHAR(20)
+    created_at: TIMESTAMP
+}
+
+entity "Author" as author {
+    *id: BIGINT <<PK>>
+    --
+    name: VARCHAR(100)
+    bio: TEXT
+    avatar_url: VARCHAR(255)
+}
+
+entity "Story" as story {
+    *id: BIGINT <<PK>>
+    --
+    title: VARCHAR(255)
+    author_id: BIGINT <<FK>>
+    description: TEXT
+    cover_url: VARCHAR(255)
+    type: VARCHAR(20)
+    status: VARCHAR(20)
+    view_count: BIGINT
+    average_rating: DOUBLE
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+entity "Genre" as genre {
+    *id: BIGINT <<PK>>
+    --
+    name: VARCHAR(50)
+}
+
+entity "Story_Genre" as story_genre {
+    *story_id: BIGINT <<FK, PK>>
+    *genre_id: BIGINT <<FK, PK>>
+}
+
+entity "Chapter" as chapter {
+    *id: BIGINT <<PK>>
+    --
+    story_id: BIGINT <<FK>>
+    chapter_number: FLOAT
+    title: VARCHAR(255)
+    content: LONGTEXT
+    is_premium: BOOLEAN
+    created_at: TIMESTAMP
+    updated_at: TIMESTAMP
+}
+
+entity "ChapterImage" as chapter_image {
+    *id: BIGINT <<PK>>
+    --
+    chapter_id: BIGINT <<FK>>
+    image_url: VARCHAR(255)
+    order_number: INT
+}
+
+entity "Follow" as follow {
+    *user_id: BIGINT <<FK, PK>>
+    *story_id: BIGINT <<FK, PK>>
+    --
+    created_at: TIMESTAMP
+}
+
+entity "Rating" as rating {
+    *id: BIGINT <<PK>>
+    --
+    user_id: BIGINT <<FK>>
+    story_id: BIGINT <<FK>>
+    score: INT <<1 to 5>>
+    review_text: TEXT
+    created_at: TIMESTAMP
+}
+
+entity "Comment" as comment {
+    *id: BIGINT <<PK>>
+    --
+    user_id: BIGINT <<FK>>
+    chapter_id: BIGINT <<FK>>
+    content: TEXT
+    created_at: TIMESTAMP
+}
+
+entity "Notification" as notification {
+    *id: BIGINT <<PK>>
+    --
+    user_id: BIGINT <<FK>>
+    title: VARCHAR(255)
+    message: TEXT
+    target_type: VARCHAR(20)
+    target_id: BIGINT
+    is_read: BOOLEAN
+    created_at: TIMESTAMP
+}
+
+entity "ReadingProgress" as progress {
+    *id: BIGINT <<PK>>
+    --
+    user_id: BIGINT <<FK>>
+    story_id: BIGINT <<FK>>
+    chapter_id: BIGINT <<FK>>
+    last_read_page: INT
+    last_read_at: TIMESTAMP
+}
+
+' Relationships
+user ||--o{ transaction
+plan ||--o{ transaction
+user ||--o{ follow
+user ||--o{ notification
+user ||--o{ rating
+user ||--o{ comment
+user ||--o{ progress
+
+author ||--o{ story
+story ||--o{ chapter
+story ||--o{ follow
+story ||--o{ rating
+story ||--o{ progress
+story }o--o{ genre
+(story, genre) .. story_genre
+
+chapter ||--o{ chapter_image
+chapter ||--o{ comment
+chapter ||--o{ progress
+
+@endum
