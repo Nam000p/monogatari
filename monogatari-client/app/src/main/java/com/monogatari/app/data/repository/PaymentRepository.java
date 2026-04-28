@@ -1,6 +1,7 @@
 package com.monogatari.app.data.repository;
 
 import com.monogatari.app.data.api.PaymentApi;
+import com.monogatari.app.data.model.payment.PaymentResponse;
 
 import java.util.Map;
 
@@ -15,5 +16,9 @@ public class PaymentRepository {
 
     public Call<Map<String, String>> createCheckout() {
         return paymentApi.createCheckoutSession();
+    }
+
+    public Call<PaymentResponse> cancelSubscription() {
+        return paymentApi.cancelSubscription();
     }
 }

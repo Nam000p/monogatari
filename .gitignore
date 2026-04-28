@@ -53,3 +53,5 @@ google-api-key.json
 # Operating System files
 .DS_Store
 Thumbs.db
+
+/monogatari-server/uploads/

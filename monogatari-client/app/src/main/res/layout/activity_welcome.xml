@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/tvLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MONOGATARI"
+        android:textColor="@color/netflix_red"
+        android:textSize="28sp"
+        android:fontFamily="sans-serif-black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:id="@+id/tvHeadline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Unlimited stories, manga, and more."
+        android:textColor="@color/text_main"
+        android:textSize="36sp"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.1"
+        app:layout_constraintBottom_toTopOf="@+id/btnGetStarted"
+        app:layout_constraintTop_toBottomOf="@id/tvLogo"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tvSubheadline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Watch anywhere. Cancel anytime."
+        android:textColor="@color/text_main"
+        android:textSize="18sp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/tvHeadline" />
+
+    <Button
+        android:id="@+id/btnGetStarted"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="GET STARTED"
+        android:backgroundTint="@color/netflix_red"
+        android:textColor="@color/text_main"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        app:cornerRadius="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="30dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

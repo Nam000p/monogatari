@@ -11,65 +11,87 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class EmailService {
-	private final JavaMailSender mailSender;
-	
-	@Async
-//	@LogIgnore
-	public void sendOtpEmail(String to, String otpCode, String purpose) {
-		try {
-			MimeMessage mimeMessage = mailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+    private final JavaMailSender mailSender;
 
-			String subject;
-			String title;
-			String description;
-			String actionText;
+    private static final String MANGA_RED = "#E53935";
 
-			switch (purpose) {
-			case "VERIFY_ACCOUNT" -> {
-                subject = "[Monogatari] Begin your journey";
-                title = "Welcome, Traveler";
-                description = "Your library of endless stories is almost ready. Use the parchment code below to verify your account and start reading:";
-                actionText = "Verification Code";
+    private static final String BG_PAGE = "#F5F5F5";
+
+    private static final String TEXT_MAIN = "#212121";
+
+    private static final String TEXT_HINT = "#757575";
+
+    private static final String BUTTON_BLACK = "#000000";
+
+    @Async
+    public void sendOtpEmail(String to, String otpCode, String purpose) {
+       try {
+          MimeMessage mimeMessage = mailSender.createMimeMessage();
+          MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+
+          String subject;
+          String title;
+          String description;
+          String actionLabel;
+
+          switch (purpose) {
+          case "VERIFY_ACCOUNT" -> {
+                subject = "[Monogatari] Verify Your Account";
+                title = "Create Your Account";
+                description = "Thank you for joining Monogatari App. Use the verification code below to complete your registration:";
+                actionLabel = "VERIFICATION CODE";
             }
-			case "RESET_PASSWORD" -> {
-                subject = "[Monogatari] Recover your key";
-                title = "Reset Your Password";
-                description = "It seems you've lost your key to the library. Use the code below to safely restore your access:";
-                actionText = "Reset Code";
+          case "RESET_PASSWORD" -> {
+                subject = "[Monogatari] Reset Your Password";
+                title = "Security Check";
+                description = "We received a request to reset your password. Enter the following code in the app to proceed:";
+                actionLabel = "RESET CODE";
             }
             default -> throw new IllegalArgumentException("Invalid OTP purpose: " + purpose);
         }
 
-			String htmlContent = buildHtmlTemplate(title, description, actionText, otpCode);
+          String htmlContent = buildHtmlTemplate(title, description, actionLabel, otpCode);
 
-			helper.setTo(to);
-			helper.setSubject(subject);
-			helper.setText(htmlContent, true);
+          helper.setTo(to);
+          helper.setSubject(subject);
+          helper.setText(htmlContent, true);
 
-			mailSender.send(mimeMessage);
-		} catch (MessagingException e) {
-			throw new RuntimeException("Failed to send HTML email: " + e.getMessage());
-		}
-	}
+          mailSender.send(mimeMessage);
+       } catch (MessagingException e) {
+          throw new RuntimeException("Failed to send HTML email: " + e.getMessage());
+       }
+    }
 
-	private String buildHtmlTemplate(String title, String description, String actionText, String otpCode) {
-		return "<div style=\"background-color: #f4ecd8; padding: 40px 10px; font-family: 'Georgia', serif; color: #2c2c2c;\">"
-                + "  <div style=\"max-width: 500px; margin: 0 auto; background-color: #fdfbf7; border: 1px solid #d3c6a3; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);\">"
-                + "    <div style=\"padding: 30px; text-align: center; border-bottom: 1px double #d3c6a3;\">"
-                + "      <h1 style=\"margin: 0; font-size: 28px; font-style: italic; color: #5d4037; letter-spacing: 2px;\">Monogatari</h1>"
+    private String buildHtmlTemplate(String title, String description, String actionLabel, String otpCode) {
+       return "<div style=\"background-color: " + BG_PAGE + "; padding: 50px 20px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: " + TEXT_MAIN + ";\">"
+                + "  <div style=\"max-width: 450px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);\">"
+                + "    "
+                + "    <div style=\"padding: 40px 30px 20px 30px; text-align: left;\">"
+                + "      <h1 style=\"margin: 0; font-size: 24px; font-weight: 900; color: " + MANGA_RED + "; text-transform: uppercase; letter-spacing: -1px;\">Monogatari App</h1>"
                 + "    </div>"
-                + "    <div style=\"padding: 40px 30px; text-align: center;\">"
-                + "      <h2 style=\"margin-top: 0; color: #3e2723; font-size: 20px; font-weight: normal;\">" + title + "</h2>"
-                + "      <p style=\"font-size: 16px; line-height: 1.8; color: #4e342e; margin-bottom: 30px;\">" + description + "</p>"
-                + "      <div style=\"margin: 30px 0; padding: 20px; background-color: #f9f4e8; border-top: 1px solid #d3c6a3; border-bottom: 1px solid #d3c6a3;\">"
-                + "        <p style=\"margin: 0 0 10px 0; font-size: 12px; color: #8d6e63; text-transform: uppercase; letter-spacing: 2px;\">" + actionText + "</p>"
-                + "        <span style=\"font-size: 32px; font-weight: bold; color: #2c2c2c; letter-spacing: 10px;\">" + otpCode + "</span>"
+                + "    "
+                + "    "
+                + "    <div style=\"padding: 0 30px 40px 30px; text-align: left;\">"
+                + "      <h2 style=\"margin: 0 0 15px 0; color: " + TEXT_MAIN + "; font-size: 28px; font-weight: bold;\">" + title + "</h2>"
+                + "      <p style=\"font-size: 16px; line-height: 1.6; color: " + TEXT_HINT + "; margin-bottom: 30px;\">" + description + "</p>"
+                + "      "
+                + "      "
+                + "      <div style=\"background-color: " + BUTTON_BLACK + "; padding: 25px; border-radius: 16px; text-align: center;\">"
+                + "        <p style=\"margin: 0 0 10px 0; font-size: 12px; font-weight: bold; color: #ffffff; opacity: 0.7; letter-spacing: 2px;\">" + actionLabel + "</p>"
+                + "        <span style=\"font-size: 36px; font-weight: 800; color: #ffffff; letter-spacing: 8px; font-family: monospace;\">" + otpCode + "</span>"
                 + "      </div>"
-                + "      <p style=\"font-size: 13px; color: #a1887f; font-style: italic;\">Valid for 5 minutes. If you didn't request this, just close this chapter.</p>"
+                + "      "
+                + "      <p style=\"font-size: 13px; color: " + TEXT_HINT + "; margin-top: 30px; line-height: 1.5;\">"
+                + "        This code is valid for <b>5 minutes</b>. <br/>"
+                + "        If you didn't request this, you can safely ignore this email."
+                + "      </p>"
                 + "    </div>"
-                + "    <div style=\"padding: 20px; text-align: center; background-color: #efe5d0; border-top: 1px solid #d3c6a3; border-radius: 0 0 4px 4px;\">"
-                + "      <p style=\"margin: 0; color: #8d6e63; font-size: 11px; letter-spacing: 1px;\">&copy; 2026 MONOGATARI ARCHIVE</p>"
+                + "    "
+                + "    "
+                + "    <div style=\"padding: 20px 30px; background-color: #fcfcfc; border-top: 1px solid #eeeeee; text-align: center;\">"
+                + "      <p style=\"margin: 0; color: " + TEXT_HINT + "; font-size: 11px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase;\">"
+                + "        &copy; 2026 MONOGATARI APP ARCHIVE"
+                + "      </p>"
                 + "    </div>"
                 + "  </div>"
                 + "</div>";

@@ -1,11 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-
-    <color name="page_background">#F4F1EA</color>
-    <color name="vintage_accent">#8B5E3C</color>
-    <color name="text_charcoal">#2D2D2D</color>
-    <color name="text_sub_vintage">#7C766B</color>
-    <color name="input_background">#FFFEFC</color>
+    <color name="bg_page">#000000</color>
+    <color name="bg_card">#121212</color>
+    <color name="netflix_red">#E50914</color>
+    <color name="text_main">#FFFFFF</color>
+    <color name="text_hint">#B3B3B3</color>
+    <color name="input_bg">#333333</color>
+    <color name="input_border">#404040</color>
 </resources>

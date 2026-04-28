@@ -16,8 +16,12 @@ import com.monogatari.app.ui.viewmodel.AuthViewModelFactory;
 
 public class VerifyOtpActivity extends AppCompatActivity {
     private ActivityVerifyOtpBinding binding;
+
     private AuthViewModel authViewModel;
+
     private String email;
+
+    private String flow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +30,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         email = getIntent().getStringExtra("email");
+        flow = getIntent().getStringExtra("flow");
 
         initViewModel();
         setupObservers();
@@ -41,20 +46,16 @@ public class VerifyOtpActivity extends AppCompatActivity {
 
     private void setupListeners() {
         binding.btnVerify.setOnClickListener(v -> {
-            String otp = binding.etOtp.getText().toString().trim();
+            String otp = binding.etOtpCode.getText().toString().trim();
             if (otp.length() < 6) {
                 Toast.makeText(this, "Please enter 6-digit code", Toast.LENGTH_SHORT).show();
                 return;
             }
+
             VerifyOtpRequest request = new VerifyOtpRequest();
             request.setEmail(email);
             request.setOtpCode(otp);
             authViewModel.verifyOtp(request);
-        });
-
-        binding.tvResendOtp.setOnClickListener(v -> {
-            // Optional: Call forgot-password or a resend-otp endpoint here
-            Toast.makeText(this, "OTP resend triggered", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -66,12 +67,13 @@ public class VerifyOtpActivity extends AppCompatActivity {
 
         authViewModel.getVerifyResponse().observe(this, message -> {
             if (message != null) {
-                Toast.makeText(this, "Account verified! You can login now.", Toast.LENGTH_SHORT).show();
+                handleNavigationAfterVerification();
+            }
+        });
 
-                Intent intent = new Intent(this, LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                finish();
+        authViewModel.getGenericSuccess().observe(this, message -> {
+            if (message != null) {
+                Toast.makeText(this, "A new code has been sent to " + email, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -80,5 +82,20 @@ public class VerifyOtpActivity extends AppCompatActivity {
                 Toast.makeText(this, error, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void handleNavigationAfterVerification() {
+        Intent intent;
+        if ("recovery".equals(flow)) {
+            intent = new Intent(this, ChangePasswordActivity.class);
+            intent.putExtra("email", email);
+            intent.putExtra("otp", binding.etOtpCode.getText().toString().trim());
+        } else {
+            Toast.makeText(this, "Account verified! Let's complete your profile.", Toast.LENGTH_SHORT).show();
+            intent = new Intent(this, BirthdayActivity.class);
+        }
+
+        startActivity(intent);
+        finish();
     }
 }

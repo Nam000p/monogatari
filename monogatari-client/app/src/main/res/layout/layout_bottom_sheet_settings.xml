@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/input_bg"
+    android:paddingTop="12dp"
+    android:paddingBottom="24dp">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/input_border"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:textColor="@color/text_main"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingHorizontal="24dp"
+        android:paddingBottom="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/input_border" />
+
+    <TextView
+        android:id="@+id/btnEditProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Edit Profile"
+        android:textColor="@color/text_main"
+        android:textSize="16sp"
+        android:padding="20dp"
+        android:background="?attr/selectableItemBackground"
+        app:drawableStartCompat="@android:drawable/ic_menu_edit"
+        app:drawableTint="@color/text_main"
+        android:drawablePadding="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/input_border" />
+
+    <TextView
+        android:id="@+id/btnSubscription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Subscription"
+        android:textColor="@color/text_main"
+        android:textSize="16sp"
+        android:padding="20dp"
+        android:background="?attr/selectableItemBackground"
+        app:drawableStartCompat="@android:drawable/star_on"
+        app:drawableTint="@color/text_main"
+        android:drawablePadding="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/input_border" />
+
+    <TextView
+        android:id="@+id/btnHelp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Help &amp; Contact Us"
+        android:textColor="@color/text_main"
+        android:textSize="16sp"
+        android:padding="20dp"
+        android:background="?attr/selectableItemBackground"
+        app:drawableStartCompat="@android:drawable/ic_menu_help"
+        app:drawableTint="@color/text_main"
+        android:drawablePadding="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/input_border" />
+
+    <TextView
+        android:id="@+id/btnLogout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign Out"
+        android:textColor="@color/netflix_red"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:padding="20dp"
+        android:background="?attr/selectableItemBackground"
+        app:drawableStartCompat="@android:drawable/ic_lock_power_off"
+        app:drawableTint="@color/netflix_red"
+        android:drawablePadding="16dp" />
+
+</LinearLayout>

@@ -8,9 +8,11 @@ import com.monogatari.app.data.repository.AuthRepository;
 
 public class AuthViewModelFactory implements ViewModelProvider.Factory {
     private final AuthRepository authRepository;
+
     public AuthViewModelFactory(AuthRepository authRepository) {
         this.authRepository = authRepository;
     }
+
     @NonNull
     @Override
     @SuppressWarnings("unchecked")

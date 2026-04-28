@@ -7,6 +7,7 @@ import com.monogatari.app.data.model.user.UserUpdateProfileRequest;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -26,4 +27,7 @@ public interface UserApi {
 
     @POST("users/change-password")
     Call<String> changePassword(@Body UserChangePasswordRequest request);
+
+    @DELETE("users/me")
+    Call<String> deleteMyAccount();
 }

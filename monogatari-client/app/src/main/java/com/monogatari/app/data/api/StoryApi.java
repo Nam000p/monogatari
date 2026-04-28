@@ -19,11 +19,6 @@ public interface StoryApi {
             @Query("size") int size
     );
 
-    @GET("stories/latest")
-    Call<PageResponse<StoryResponse>> getLatestStories(
-            @Query("page") int page,
-            @Query("size") int size
-    );
     @GET("stories/{storyId}")
     Call<StoryResponse> getStoryDetails(@Path("storyId") Long storyId);
 
@@ -38,4 +33,22 @@ public interface StoryApi {
 
     @PUT("stories/{storyId}/rating/sync")
     Call<Void> syncAverageRating(@Path("storyId") Long storyId);
+
+    @GET("stories/latest")
+    Call<PageResponse<StoryResponse>> getLatestStories(
+            @Query("page") int page,
+            @Query("size") int size
+    );
+
+    @GET("stories/top-views")
+    Call<PageResponse<StoryResponse>> getTopViewedStories(
+            @Query("page") int page,
+            @Query("size") int size
+    );
+
+    @GET("stories/top-rated")
+    Call<PageResponse<StoryResponse>> getTopRatedStories(
+            @Query("page") int page,
+            @Query("size") int size
+    );
 }

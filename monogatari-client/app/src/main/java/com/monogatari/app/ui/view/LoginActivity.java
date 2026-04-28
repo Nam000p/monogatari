@@ -1,6 +1,7 @@
 package com.monogatari.app.ui.view;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +18,9 @@ import com.monogatari.app.ui.viewmodel.AuthViewModelFactory;
 
 public class LoginActivity extends AppCompatActivity {
     private ActivityLoginBinding binding;
+
     private AuthViewModel authViewModel;
+
     private TokenManager tokenManager;
 
     @Override
@@ -60,6 +63,12 @@ public class LoginActivity extends AppCompatActivity {
             authViewModel.login(request);
         });
 
+        binding.btnGoogle.setOnClickListener(v -> {
+            String oauthUrl = "https://unconfederated-fernande-tegularly.ngrok-free.dev/oauth2/authorization/google";
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(oauthUrl));
+            startActivity(intent);
+        });
+
         binding.tvGoToRegister.setOnClickListener(v -> {
             startActivity(new Intent(this, RegisterActivity.class));
         });
@@ -76,7 +85,6 @@ public class LoginActivity extends AppCompatActivity {
                 tokenManager.saveToken(response.getToken());
                 Toast.makeText(this, "Welcome to Monogatari!", Toast.LENGTH_SHORT).show();
 
-                // Intent to Home Screen later
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
 

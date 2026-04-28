@@ -17,6 +17,7 @@ public class StoryResponse implements Serializable {
     private String authorName;
     private StoryType type;
     private StoryStatus status;
+    private Integer ageLimit;
     private Double averageRating;
     private List<String> genres;
 }

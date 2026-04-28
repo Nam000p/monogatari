@@ -97,7 +97,12 @@ public class UserServiceImpl implements UserService {
 	@RateLimited(maxRequests = 10, timeWindowMs = 60000)
 	public UserProfileResponse updateMyProfile(UserUpdateProfileRequest request) {
 		User user = getCurrentAuthenticateUser();
-        user.setUsername(request.getUsername());
+		if (request.getUsername() != null ) {
+			user.setUsername(request.getUsername());
+		}
+		if (request.getBirthDate() != null) {
+			user.setBirthDate(request.getBirthDate());
+		}
         User savedUser = userRepository.save(user);
         return mapToResponse(savedUser);
 	}

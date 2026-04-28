@@ -17,9 +17,7 @@ public class StoryRepository {
     public Call<PageResponse<StoryResponse>> getStories(String search, int page, int size) {
         return storyApi.getStories(search, page, size);
     }
-    public Call<PageResponse<StoryResponse>> getLatestStories(int page, int size) {
-        return storyApi.getLatestStories(page, size);
-    }
+
     public Call<StoryResponse> getStoryDetails(Long id) {
         return storyApi.getStoryDetails(id);
     }
@@ -38,5 +36,17 @@ public class StoryRepository {
 
     public Call<Void> syncAverageRating(Long storyId) {
         return storyApi.syncAverageRating(storyId);
+    }
+
+    public Call<PageResponse<StoryResponse>> getLatestStories(int page, int size) {
+        return storyApi.getLatestStories(page, size);
+    }
+
+    public Call<PageResponse<StoryResponse>> getTopViewedStories(int page, int size) {
+        return storyApi.getTopViewedStories(page, size);
+    }
+
+    public Call<PageResponse<StoryResponse>> getTopRatedStories(int page, int size) {
+        return storyApi.getTopRatedStories(page, size);
     }
 }

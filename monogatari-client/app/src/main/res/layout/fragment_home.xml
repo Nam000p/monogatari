@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="100dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="480dp">
+
+                <ImageView
+                    android:id="@+id/ivFeaturedCover"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/featured_placeholder" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gradient_black_overlay" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="16dp"
+                    android:background="#4D000000">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:id="@+id/llHomeContainer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="M"
+                                android:textColor="@color/netflix_red"
+                                android:textSize="32sp"
+                                android:fontFamily="sans-serif-black" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:text="Home"
+                                android:textColor="@color/text_main"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/btnSearch"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:src="@android:drawable/ic_menu_search"
+                            app:tint="@color/text_main"
+                            android:background="?attr/selectableItemBackgroundBorderless" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="12dp"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/tvManga"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Manga"
+                            android:textColor="@color/text_main"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:background="?attr/selectableItemBackground" />
+
+                        <TextView
+                            android:id="@+id/tvLightNovel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            android:text="Light Novel"
+                            android:textColor="@color/text_main"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:background="?attr/selectableItemBackground" />
+
+                        <Spinner
+                            android:id="@+id/spinnerGenre"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            android:backgroundTint="@color/text_main"
+                            android:spinnerMode="dropdown" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingBottom="24dp">
+
+                    <TextView
+                        android:id="@+id/tvFeaturedGenres"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Action • Fantasy • Seinen"
+                        android:textColor="@color/text_main"
+                        android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btnReadNow"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/text_main"
+                            android:text="Read Now"
+                            android:textColor="@color/bg_page"
+                            android:textStyle="bold"
+                            app:icon="@android:drawable/ic_media_play"
+                            app:iconTint="@color/bg_page"
+                            app:cornerRadius="4dp" />
+
+                        <Button
+                            android:id="@+id/btnMyList"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:text="My List"
+                            android:textColor="@color/text_main"
+                            app:icon="@android:drawable/ic_input_add"
+                            app:iconTint="@color/text_main" />
+                    </LinearLayout>
+                </LinearLayout>
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:text="Trending Now"
+                android:textColor="@color/text_main"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvTrending"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingHorizontal="12dp"
+                android:clipToPadding="false"
+                android:orientation="horizontal" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

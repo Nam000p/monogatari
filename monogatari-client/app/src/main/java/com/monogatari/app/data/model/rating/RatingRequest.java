@@ -5,6 +5,5 @@ import lombok.Data;
 @Data
 public class RatingRequest {
     private Integer score;
-    
     private String review;
 }

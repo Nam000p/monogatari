@@ -1,6 +1,7 @@
 package com.monogatari.app.ui.view;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,6 +53,12 @@ public class RegisterActivity extends AppCompatActivity {
             request.setEmail(email);
             request.setPassword(password);
             authViewModel.register(request);
+        });
+
+        binding.btnGoogle.setOnClickListener(v -> {
+            String oauthUrl = "https://unconfederated-fernande-tegularly.ngrok-free.dev/oauth2/authorization/google";
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(oauthUrl));
+            startActivity(intent);
         });
 
         binding.tvGoToLogin.setOnClickListener(v -> finish());

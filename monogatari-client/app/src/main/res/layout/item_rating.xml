@@ -4,43 +4,81 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginBottom="8dp"
-    android:background="@color/input_background">
+    android:background="@color/bg_page"
+    android:padding="16dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvAvatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:cardCornerRadius="20dp"
+        app:cardBackgroundColor="@color/input_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivUserAvatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/tvUsername"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/text_charcoal"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:fontFamily="serif"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvScore" />
-
-    <TextView
-        android:id="@+id/tvScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/vintage_accent"
+        android:layout_marginStart="12dp"
+        android:textColor="@color/text_main"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:fontFamily="serif"
+        app:layout_constraintStart_toEndOf="@id/cvAvatar"
+        app:layout_constraintTop_toTopOf="@id/cvAvatar" />
+
+    <LinearLayout
+        android:id="@+id/llScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/cvAvatar">
+
+        <ImageView
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@android:drawable/star_on"
+            app:tint="#46D369" />
+
+        <TextView
+            android:id="@+id/tvScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="#46D369"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/tvComment"
-        android:layout_width="match_parent"
+        android:id="@+id/tvDate"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textColor="@color/text_sub_vintage"
+        android:layout_marginStart="12dp"
+        android:textColor="@color/text_hint"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/cvAvatar"
+        app:layout_constraintTop_toBottomOf="@id/tvUsername" />
+
+    <TextView
+        android:id="@+id/tvReviewContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/text_main"
         android:textSize="14sp"
-        android:fontFamily="serif"
-        app:layout_constraintTop_toBottomOf="@id/tvUsername"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:lineSpacingExtra="4dp"
+        app:layout_constraintStart_toStartOf="@id/tvUsername"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cvAvatar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

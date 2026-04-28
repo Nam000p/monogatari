@@ -10,13 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/chapters")
+@RequestMapping("/api/stories/{storyId}/chapters")
 @RequiredArgsConstructor
 public class ChapterController {
 	private final ChapterService chapterService;
 
 	@GetMapping("/{chapterId}")
-    public ResponseEntity<ChapterResponse> getChapter(@PathVariable Long chapterId) {
+    public ResponseEntity<ChapterResponse> getChapter(@PathVariable Long storyId, @PathVariable Long chapterId) {
 		ChapterResponse response = chapterService.getChapterDetails(chapterId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

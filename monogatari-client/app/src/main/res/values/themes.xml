@@ -1,17 +1,58 @@
 <resources>
-    <!-- Base application theme. -->
     <style name="Base.Theme.MonogatariApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/netflix_red</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+
+        <item name="android:windowBackground">@color/bg_page</item>
+        <item name="colorSurface">@color/bg_page</item>
+        <item name="colorOnSurface">@color/text_main</item>
+        <item name="colorSurfaceVariant">@color/bg_card</item>
+        <item name="colorOnSurfaceVariant">@color/text_hint</item>
+
+        <item name="android:statusBarColor">@color/bg_page</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
-    <style name="VintageToolbarTitle" parent="TextAppearance.MaterialComponents.Headline6">
-        <item name="android:fontFamily">serif</item>
+
+    <style name="Monogatari.Toolbar.Title" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:fontFamily">sans-serif-black</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:letterSpacing">0.1</item>
-        <item name="android:textColor">@color/vintage_accent</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/text_main</item>
+        <item name="android:letterSpacing">0.02</item>
     </style>
+
     <style name="CircleImage">
+        <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
+    <style name="TopRoundedCorner">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">12dp</item>
+        <item name="cornerSizeTopRight">12dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <style name="RoundedCorner">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="Monogatari.EditText" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/bg_card</item>
+        <item name="boxStrokeColor">@color/input_border</item>
+        <item name="hintTextColor">@color/netflix_red</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
     <style name="Theme.MonogatariApp" parent="Base.Theme.MonogatariApp" />
+
+    <style name="MaterialCalendarTheme" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="colorSurface">@color/bg_page</item>
+        <item name="colorOnSurface">@color/text_main</item>
+        <item name="colorPrimary">@color/netflix_red</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+    </style>
 </resources>

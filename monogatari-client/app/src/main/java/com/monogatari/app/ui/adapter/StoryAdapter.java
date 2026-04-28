@@ -4,92 +4,55 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
+import com.monogatari.app.databinding.ItemStoryPosterBinding;
 import com.monogatari.app.data.model.story.StoryResponse;
-import com.monogatari.app.data.model.enums.StoryStatus;
-import com.monogatari.app.databinding.ItemStoryBinding;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHolder> {
+public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> {
 
-    private List<StoryResponse> storyList;
-    private OnStoryClickListener listener;
+    private List<StoryResponse> stories = new ArrayList<>();
+    private final OnStoryClickListener listener;
 
     public interface OnStoryClickListener {
         void onStoryClick(StoryResponse story);
     }
 
-    // Required Constructor
-    public StoryAdapter(List<StoryResponse> storyList) {
-        this.storyList = storyList;
-    }
-
-    public void setOnStoryClickListener(OnStoryClickListener listener) {
+    public StoryAdapter(OnStoryClickListener listener) {
         this.listener = listener;
     }
 
-    public void setStories(List<StoryResponse> stories) {
-        this.storyList = stories;
+    public void submitList(List<StoryResponse> newStories) {
+        this.stories = newStories;
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public StoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemStoryBinding binding = ItemStoryBinding.inflate(
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        ItemStoryPosterBinding binding = ItemStoryPosterBinding.inflate(
                 LayoutInflater.from(parent.getContext()), parent, false);
-        return new StoryViewHolder(binding);
+        return new ViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull StoryViewHolder holder, int position) {
-        StoryResponse story = storyList.get(position);
-        holder.bind(story);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        StoryResponse story = stories.get(position);
+
+        holder.itemView.setOnClickListener(v -> listener.onStoryClick(story));
     }
 
     @Override
     public int getItemCount() {
-        return storyList != null ? storyList.size() : 0;
+        return stories.size();
     }
 
-    class StoryViewHolder extends RecyclerView.ViewHolder {
-        private final ItemStoryBinding binding;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final ItemStoryPosterBinding binding;
 
-        public StoryViewHolder(ItemStoryBinding binding) {
+        public ViewHolder(ItemStoryPosterBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-
-            itemView.setOnClickListener(v -> {
-                int position = getAdapterPosition();
-                if (listener != null && position != RecyclerView.NO_POSITION) {
-                    listener.onStoryClick(storyList.get(position));
-                }
-            });
-        }
-
-        public void bind(StoryResponse story) {
-            binding.tvStoryTitle.setText(story.getTitle());
-            binding.tvStoryAuthor.setText(story.getAuthorName());
-            binding.tvStoryDescription.setText(story.getDescription());
-
-            if (story.getStatus() != null) {
-                String statusLabel = story.getStatus() == StoryStatus.ONGOING ? "Ongoing" : "Completed";
-                binding.tvStatus.setText(statusLabel);
-            }
-
-            if (story.getAverageRating() != null) {
-                binding.tvRating.setText(String.format("⭐ %.1f", story.getAverageRating()));
-            } else {
-                binding.tvRating.setText("⭐ 0.0");
-            }
-
-            Glide.with(itemView.getContext())
-                    .load(story.getCoverUrl())
-                    .centerCrop()
-                    .placeholder(android.R.drawable.ic_menu_gallery)
-                    .into(binding.ivStoryCover);
         }
     }
 }

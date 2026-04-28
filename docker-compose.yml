@@ -30,5 +30,21 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: monogatari-ngrok
+    restart: always
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    ports:
+      - "4040:4040"
+    command:
+      - "http"
+      - "https://host.docker.internal:8443"
+      - "--domain=unconfederated-fernande-tegularly.ngrok-free.dev"
+      - "--host-header=rewrite" 
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
 volumes:
   db_data:

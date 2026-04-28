@@ -48,9 +48,10 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/api/v1/auth/**", "/login/**", "/oauth2/**").permitAll()
-                .requestMatchers("/api/v1/public/**", "/monogatari_uploads/**").permitAll()
-                .requestMatchers("/api/v1/payments/webhook").permitAll()
+                .requestMatchers("/api/auth/**", "/api/auth/logout", "/api/auth/logout/").permitAll()
+                .requestMatchers("/login/**", "/oauth2/**").permitAll()
+                .requestMatchers("/uploads/**").permitAll()
+                .requestMatchers("/api/payments/webhook").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
@@ -60,7 +61,8 @@ public class SecurityConfig {
                 )
                 .redirectionEndpoint(red -> red.baseUri("/login/oauth2/code/*"))
                 .successHandler(oAuth2AuthenticationSuccessHandler)
-            );
+            )
+            .logout(AbstractHttpConfigurer::disable);
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -71,7 +73,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOriginPatterns(Collections.singletonList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "ngrok-skip-browser-warning"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

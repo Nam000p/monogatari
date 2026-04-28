@@ -29,4 +29,8 @@ public class UserRepository {
     public Call<String> changePassword(UserChangePasswordRequest request) {
         return userApi.changePassword(request);
     }
+
+    public Call<String> deleteMyAccount() {
+        return userApi.deleteMyAccount();
+    }
 }

@@ -50,14 +50,14 @@ public class JwtTokenProvider {
 	}
 	
 	public String generateToken(String email) {
-		Date currentDate = new Date();
-		Date expirationDate = new Date(currentDate.getTime() + jwtExpirationDate);
-		return Jwts.builder()
-				.subject(email)
-				.issuedAt(new Date())
-				.expiration(expirationDate)
-				.signWith(key())
-				.compact();
+	   Instant now = Instant.now();
+	   Instant expiry = now.plusMillis(jwtExpirationDate);
+	   return Jwts.builder()
+			 .subject(email)
+			 .issuedAt(Date.from(now))
+			 .expiration(Date.from(expiry))
+			 .signWith(key())
+			 .compact();
 	}
 	
 	public String getEmail(String token) {

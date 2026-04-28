@@ -1,11 +1,12 @@
 package com.monogatari.app.data.api;
 
 import android.content.Context;
+import androidx.annotation.NonNull;
 import com.monogatari.app.data.local.TokenManager;
-import java.io.IOException;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import java.io.IOException;
 
 public class AuthInterceptor implements Interceptor {
     private final Context context;
@@ -14,16 +15,27 @@ public class AuthInterceptor implements Interceptor {
         this.context = context;
     }
 
+    @NonNull
     @Override
     public Response intercept(Chain chain) throws IOException {
-        String token = TokenManager.getInstance(context).getToken();
-        Request.Builder builder = chain.request().newBuilder();
+        Request request = chain.request();
+        String path = request.url().encodedPath();
 
-        // If token exists, add it to Authorization header
-        if (token != null) {
-            builder.addHeader("Authorization", "Bearer " + token);
+        Request.Builder builder = request.newBuilder()
+                .header("ngrok-skip-browser-warning", "true");
+
+        if (path.contains("/auth/login") ||
+                path.contains("/auth/register") ||
+                path.contains("/auth/logout") ||
+                path.contains("/auth/refresh")) {
+
+            builder.removeHeader("Authorization");
+        } else {
+            String token = TokenManager.getInstance(context).getToken();
+            if (token != null) {
+                builder.header("Authorization", "Bearer " + token);
+            }
         }
-
         return chain.proceed(builder.build());
     }
 }
