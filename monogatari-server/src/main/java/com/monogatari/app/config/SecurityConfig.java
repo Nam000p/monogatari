@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**", "/api/auth/logout", "/api/auth/logout/").permitAll()
                 .requestMatchers("/login/**", "/oauth2/**").permitAll()
                 .requestMatchers("/uploads/**").permitAll()
-                .requestMatchers("/api/payments/webhook").permitAll()
+                .requestMatchers("/api/payments/**").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2

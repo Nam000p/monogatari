@@ -1,5 +1,6 @@
 package com.monogatari.app.ui.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ public class ReaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.clickListener = clickListener;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void submitList(List<ReaderItem> newItems) {
         this.items = newItems;
         notifyDataSetChanged();
@@ -79,11 +81,10 @@ public class ReaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     static class ImageViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView ivImage;
 
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivImage = itemView.findViewById(R.id.ivReaderImage);
+            ImageView ivImage = itemView.findViewById(R.id.ivReaderImage);
         }
 
         public void bind(String imageUrl) {

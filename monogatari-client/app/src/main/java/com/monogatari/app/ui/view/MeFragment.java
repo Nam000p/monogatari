@@ -27,6 +27,7 @@ import com.monogatari.app.data.api.AuthApi;
 import com.monogatari.app.data.api.UserApi;
 import com.monogatari.app.data.local.TokenManager;
 import com.monogatari.app.data.model.user.UserProfileResponse;
+import com.monogatari.app.data.repository.AuthRepository;
 import com.monogatari.app.data.repository.UserRepository;
 import com.monogatari.app.databinding.FragmentMeBinding;
 import com.monogatari.app.ui.viewmodel.UserViewModel;
@@ -129,12 +130,12 @@ public class MeFragment extends Fragment {
 
         view.findViewById(R.id.btnSubscription).setOnClickListener(v -> {
             dialog.dismiss();
-            Toast.makeText(getContext(), "Stripe Payment Coming Soon", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getActivity(), SubscriptionActivity.class));
         });
 
         view.findViewById(R.id.btnHelp).setOnClickListener(v -> {
             dialog.dismiss();
-            Toast.makeText(getContext(), "Contact: dangxuannam32@gmail.com", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Contact: admin@monogatari.com", Toast.LENGTH_LONG).show();
         });
 
         view.findViewById(R.id.btnLogout).setOnClickListener(v -> {
@@ -153,9 +154,19 @@ public class MeFragment extends Fragment {
 
     private void performLogout() {
         sharedPreferences.edit().clear().apply();
-        ApiClient.getClient(requireContext()).create(AuthApi.class).logout().enqueue(new Callback<>() {
-            @Override public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) { clearSession(); }
-            @Override public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) { clearSession(); }
+
+        AuthApi authApi = ApiClient.getClient(requireContext()).create(AuthApi.class);
+        AuthRepository authRepository = new AuthRepository(authApi);
+
+        authRepository.logout().enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
+                clearSession();
+            }
+            @Override
+            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+                clearSession();
+            }
         });
     }
 

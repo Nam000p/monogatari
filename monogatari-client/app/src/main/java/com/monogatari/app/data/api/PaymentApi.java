@@ -12,6 +12,6 @@ public interface PaymentApi {
     @POST("payments/create-checkout-session")
     Call<Map<String, String>> createCheckoutSession();
 
-    @PUT("payments/cancel")
+    @PUT("payments/cancel-subscription")
     Call<PaymentResponse> cancelSubscription();
 }

@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.monogatari.app.data.local.TokenManager;
 import com.monogatari.app.data.model.auth.AuthResponse;
+import com.monogatari.app.data.repository.AuthRepository;
 import java.io.IOException;
 import okhttp3.Authenticator;
 import okhttp3.Request;
@@ -27,10 +28,10 @@ public class TokenAuthenticator implements Authenticator {
 
         TokenManager tokenManager = TokenManager.getInstance(context);
 
-        retrofit2.Response<AuthResponse> refreshResponse = ApiClient.getClient(context)
-                .create(AuthApi.class)
-                .refreshToken()
-                .execute();
+        AuthApi authApi = ApiClient.getClient(context).create(AuthApi.class);
+        AuthRepository authRepository = new AuthRepository(authApi);
+
+        retrofit2.Response<AuthResponse> refreshResponse = authRepository.refreshToken().execute();
 
         if (refreshResponse.isSuccessful() && refreshResponse.body() != null) {
             AuthResponse authResponse = refreshResponse.body();
