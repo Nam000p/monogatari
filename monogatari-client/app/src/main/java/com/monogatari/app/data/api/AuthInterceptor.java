@@ -30,9 +30,16 @@ public class AuthInterceptor implements Interceptor {
                 path.contains("/auth/refresh")) {
 
             builder.removeHeader("Authorization");
+
+            if (path.contains("/auth/refresh")) {
+                String refreshToken = TokenManager.getInstance(context).getRefreshToken();
+                if (refreshToken != null && !refreshToken.isEmpty()) {
+                    builder.header("Cookie", "refreshToken=" + refreshToken);
+                }
+            }
         } else {
             String token = TokenManager.getInstance(context).getToken();
-            if (token != null) {
+            if (token != null && !token.isEmpty()) {
                 builder.header("Authorization", "Bearer " + token);
             }
         }

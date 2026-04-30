@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -80,7 +82,19 @@ public class ReadingProgressServiceImpl extends BaseService implements ReadingPr
 
         return mapToResponse(progress);
 	}
-	
+
+	@Override
+	@Transactional(readOnly = true)
+    public List<ReadingProgressResponse> getAllMyProgress() {
+        Long currentUserId = getCurrentUser().getId();
+
+        List<ReadingProgress> progressList = progressRepository.findAllByUserIdOrderByLastReadAtDesc(currentUserId);
+
+        return progressList.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
 	private ReadingProgressResponse mapToResponse(ReadingProgress progress) {
         ReadingProgressResponse response = new ReadingProgressResponse();
         response.setStoryId(progress.getStory().getId());

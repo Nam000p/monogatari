@@ -54,5 +54,11 @@
         <item name="colorOnSurface">@color/text_main</item>
         <item name="colorPrimary">@color/netflix_red</item>
         <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorOnSurfaceVariant">@color/text_hint</item>
+    </style>
+
+    <style name="DarkSpinnerPopupTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:colorBackground">@color/bg_page</item>
+        <item name="android:textColor">@color/text_main</item>
     </style>
 </resources>

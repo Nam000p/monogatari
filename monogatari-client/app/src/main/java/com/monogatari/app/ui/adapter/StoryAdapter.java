@@ -5,12 +5,16 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.monogatari.app.databinding.ItemStoryPosterBinding;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.monogatari.app.data.model.story.StoryResponse;
+import com.monogatari.app.databinding.ItemStoryPosterBinding;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> {
+public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHolder> {
+
     private List<StoryResponse> stories = new ArrayList<>();
     private final OnStoryClickListener listener;
 
@@ -23,24 +27,21 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void submitList(List<StoryResponse> newStories) {
+    public void setStories(List<StoryResponse> newStories) {
         this.stories = newStories;
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemStoryPosterBinding binding = ItemStoryPosterBinding.inflate(
-                LayoutInflater.from(parent.getContext()), parent, false);
-        return new ViewHolder(binding);
+    public StoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        ItemStoryPosterBinding binding = ItemStoryPosterBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new StoryViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        StoryResponse story = stories.get(position);
-
-        holder.itemView.setOnClickListener(v -> listener.onStoryClick(story));
+    public void onBindViewHolder(@NonNull StoryViewHolder holder, int position) {
+        holder.bind(stories.get(position));
     }
 
     @Override
@@ -48,10 +49,25 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
         return stories.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    class StoryViewHolder extends RecyclerView.ViewHolder {
+        private final ItemStoryPosterBinding binding;
 
-        public ViewHolder(ItemStoryPosterBinding binding) {
+        public StoryViewHolder(ItemStoryPosterBinding binding) {
             super(binding.getRoot());
+            this.binding = binding;
+        }
+
+        public void bind(StoryResponse story) {
+            Glide.with(binding.getRoot().getContext())
+                    .load(story.getCoverUrl())
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(binding.ivCover);
+
+            binding.getRoot().setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onStoryClick(story);
+                }
+            });
         }
     }
 }

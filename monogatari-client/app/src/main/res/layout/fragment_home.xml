@@ -20,12 +20,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="480dp">
 
-                <ImageView
-                    android:id="@+id/ivFeaturedCover"
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vpBanner"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/featured_placeholder" />
+                    android:layout_height="match_parent" />
 
                 <View
                     android:layout_width="match_parent"
@@ -70,15 +68,30 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
 
-                        <ImageView
-                            android:id="@+id/btnSearch"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
-                            android:src="@android:drawable/ic_menu_search"
-                            app:tint="@color/text_main"
-                            android:background="?attr/selectableItemBackgroundBorderless" />
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/btnAiSearch"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_marginEnd="16dp"
+                                android:src="@android:drawable/ic_btn_speak_now"
+                                app:tint="@color/netflix_red"
+                                android:background="?attr/selectableItemBackgroundBorderless" />
+
+                            <ImageView
+                                android:id="@+id/btnSearch"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@android:drawable/ic_menu_search"
+                                app:tint="@color/text_main"
+                                android:background="?attr/selectableItemBackgroundBorderless" />
+                        </LinearLayout>
                     </RelativeLayout>
 
                     <LinearLayout
@@ -116,7 +129,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="32dp"
                             android:backgroundTint="@color/text_main"
-                            android:spinnerMode="dropdown" />
+                            android:spinnerMode="dropdown"
+                            app:popupTheme="@style/DarkSpinnerPopupTheme" />
 
                     </LinearLayout>
                 </LinearLayout>
@@ -133,7 +147,7 @@
                         android:id="@+id/tvFeaturedGenres"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Action • Fantasy • Seinen"
+                        android:text=""
                         android:textColor="@color/text_main"
                         android:textSize="12sp" />
 
@@ -182,6 +196,44 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvTrending"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingHorizontal="12dp"
+                android:clipToPadding="false"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:text="New Releases"
+                android:textColor="@color/text_main"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvNewest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingHorizontal="12dp"
+                android:clipToPadding="false"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:text="Top Rated"
+                android:textColor="@color/text_main"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvTopRated"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"

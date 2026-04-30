@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +25,18 @@ import com.google.gson.Gson;
 import com.monogatari.app.R;
 import com.monogatari.app.data.api.ApiClient;
 import com.monogatari.app.data.api.AuthApi;
+import com.monogatari.app.data.api.FollowApi;
+import com.monogatari.app.data.api.ReadingProgressApi;
 import com.monogatari.app.data.api.UserApi;
 import com.monogatari.app.data.local.TokenManager;
 import com.monogatari.app.data.model.user.UserProfileResponse;
 import com.monogatari.app.data.repository.AuthRepository;
+import com.monogatari.app.data.repository.FollowRepository;
+import com.monogatari.app.data.repository.ReadingProgressRepository;
 import com.monogatari.app.data.repository.UserRepository;
 import com.monogatari.app.databinding.FragmentMeBinding;
+import com.monogatari.app.ui.adapter.FollowAdapter;
+import com.monogatari.app.ui.adapter.ReadingProgressAdapter;
 import com.monogatari.app.ui.viewmodel.UserViewModel;
 import com.monogatari.app.ui.viewmodel.UserViewModelFactory;
 
@@ -40,6 +47,8 @@ import retrofit2.Response;
 public class MeFragment extends Fragment {
     private FragmentMeBinding binding;
     private UserViewModel userViewModel;
+    private FollowAdapter followAdapter;
+    private ReadingProgressAdapter readingAdapter;
     private SharedPreferences sharedPreferences;
     private static final String PREF_NAME = "user_cache";
     private static final String KEY_PROFILE = "profile_json";
@@ -56,15 +65,17 @@ public class MeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        UserRepository repository = new UserRepository(ApiClient.getClient(requireContext()).create(UserApi.class));
-        userViewModel = new ViewModelProvider(this, new UserViewModelFactory(repository)).get(UserViewModel.class);
+        UserRepository userRepository = new UserRepository(ApiClient.getClient(requireContext()).create(UserApi.class));
+        FollowRepository followRepository = new FollowRepository(ApiClient.getClient(requireContext()).create(FollowApi.class));
+        ReadingProgressRepository progressRepository = new ReadingProgressRepository(ApiClient.getClient(requireContext()).create(ReadingProgressApi.class));
+
+        userViewModel = new ViewModelProvider(this, new UserViewModelFactory(userRepository, followRepository, progressRepository)).get(UserViewModel.class);
 
         setupUI();
         loadCache();
-
         observeData();
 
-        userViewModel.fetchProfile();
+        userViewModel.fetchAllData();
     }
 
     private void loadCache() {
@@ -94,9 +105,25 @@ public class MeFragment extends Fragment {
     }
 
     private void setupUI() {
-        binding.rvReading.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        followAdapter = new FollowAdapter(storyId -> {
+            Intent intent = new Intent(requireContext(), StoryDetailActivity.class);
+            intent.putExtra(StoryDetailActivity.EXTRA_STORY_ID, storyId);
+            startActivity(intent);
+        });
+
+        readingAdapter = new ReadingProgressAdapter(storyId -> {
+            Intent intent = new Intent(requireContext(), StoryDetailActivity.class);
+            intent.putExtra(StoryDetailActivity.EXTRA_STORY_ID, storyId);
+            startActivity(intent);
+        });
+
         binding.rvFollowing.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.swipeRefresh.setOnRefreshListener(() -> userViewModel.fetchProfile());
+        binding.rvFollowing.setAdapter(followAdapter);
+
+        binding.rvReading.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.rvReading.setAdapter(readingAdapter);
+
+        binding.swipeRefresh.setOnRefreshListener(() -> userViewModel.fetchAllData());
         binding.btnSettings.setOnClickListener(v -> showSettingsBottomSheet());
     }
 
@@ -107,10 +134,13 @@ public class MeFragment extends Fragment {
             if (profile != null) {
                 String json = new Gson().toJson(profile);
                 sharedPreferences.edit().putString(KEY_PROFILE, json).apply();
-
                 updateUI(profile);
             }
         });
+
+        userViewModel.getFollowedList().observe(getViewLifecycleOwner(), followResponses -> followAdapter.setItems(followResponses));
+
+        userViewModel.getReadingList().observe(getViewLifecycleOwner(), readingResponses -> readingAdapter.setItems(readingResponses));
 
         userViewModel.getError().observe(getViewLifecycleOwner(), msg -> {
             if (msg != null) Toast.makeText(getContext(), "Sync failed", Toast.LENGTH_SHORT).show();
@@ -135,7 +165,16 @@ public class MeFragment extends Fragment {
 
         view.findViewById(R.id.btnHelp).setOnClickListener(v -> {
             dialog.dismiss();
-            Toast.makeText(getContext(), "Contact: admin@monogatari.com", Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:admin@monogatari.com"));
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Support Request - Monogatari App");
+
+            try {
+                startActivity(Intent.createChooser(intent, "Send email via..."));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(getContext(), "No email client installed!", Toast.LENGTH_SHORT).show();
+            }
         });
 
         view.findViewById(R.id.btnLogout).setOnClickListener(v -> {

@@ -7,14 +7,13 @@ import com.monogatari.app.enums.UserStatus;
 import lombok.Data;
 
 import java.time.Instant;
-import java.time.LocalDate;
 
 @Data
 public class UserProfileResponse {
 	private Long id;
 	private String username;
 	private String email;
-	private LocalDate birthDate;
+	private String birthDate;
 	private String avatarUrl;
 	private SystemRole role;
 	private UserStatus status;

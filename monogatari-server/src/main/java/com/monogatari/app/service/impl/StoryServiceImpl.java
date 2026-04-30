@@ -125,6 +125,7 @@ public class StoryServiceImpl extends BaseService implements StoryService {
         response.setTitle(story.getTitle());
         response.setDescription(story.getDescription());
         response.setCoverUrl(story.getCoverUrl());
+        response.setAuthorId(story.getAuthor().getId());
         response.setAuthorName(story.getAuthor() != null ? story.getAuthor().getName() : "Unknown");
         response.setType(story.getType());
         response.setStatus(story.getStatus());

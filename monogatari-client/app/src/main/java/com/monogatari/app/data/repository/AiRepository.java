@@ -14,7 +14,8 @@ public class AiRepository {
     }
 
     public Call<AiResponse> chatWithAi(String message) {
-        AiRequest request = new AiRequest(message);
+        AiRequest request = new AiRequest();
+        request.setMessage(message);
         return aiApi.chatWithAi(request);
     }
 }

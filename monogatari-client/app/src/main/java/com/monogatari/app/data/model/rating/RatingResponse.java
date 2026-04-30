@@ -1,6 +1,6 @@
 package com.monogatari.app.data.model.rating;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import lombok.Data;
 
@@ -11,5 +11,5 @@ public class RatingResponse {
     private String review;
     private String username;
     private String avatarUrl;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

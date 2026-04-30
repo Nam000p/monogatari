@@ -3,7 +3,6 @@ package com.monogatari.app.dto.follow;
 import lombok.Data;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Data
 public class FollowResponse {

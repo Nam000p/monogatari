@@ -1,6 +1,6 @@
 package com.monogatari.app.data.model.follow;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import lombok.Data;
 
@@ -11,5 +11,5 @@ public class FollowResponse {
 	private String coverUrl;
 	private String authorName;
 	private Double averageRating;
-	private LocalDateTime followedAt;
+	private Instant followedAt;
 }

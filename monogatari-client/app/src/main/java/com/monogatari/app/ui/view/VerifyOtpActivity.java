@@ -91,8 +91,7 @@ public class VerifyOtpActivity extends AppCompatActivity {
             intent.putExtra("email", email);
             intent.putExtra("otp", binding.etOtpCode.getText().toString().trim());
         } else {
-            Toast.makeText(this, "Account verified! Let's complete your profile.", Toast.LENGTH_SHORT).show();
-            intent = new Intent(this, BirthdayActivity.class);
+            intent = new Intent(this, LoginActivity.class);
         }
 
         startActivity(intent);

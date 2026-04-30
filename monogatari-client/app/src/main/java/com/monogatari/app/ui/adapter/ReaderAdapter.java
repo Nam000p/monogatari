@@ -2,32 +2,22 @@ package com.monogatari.app.ui.adapter;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.monogatari.app.R;
+import com.bumptech.glide.Glide;
+import com.monogatari.app.databinding.ItemReaderImageBinding;
+import com.monogatari.app.databinding.ItemReaderTextBinding;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ReaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    private List<ReaderItem> items = new ArrayList<>();
-    private final OnPageClickListener clickListener;
-
-    public interface OnPageClickListener {
-        void onPageClick();
-    }
-
-    public ReaderAdapter(OnPageClickListener clickListener) {
-        this.clickListener = clickListener;
-    }
+    private final List<ReaderItem> items = new ArrayList<>();
 
     @SuppressLint("NotifyDataSetChanged")
-    public void submitList(List<ReaderItem> newItems) {
-        this.items = newItems;
+    public void setItems(List<ReaderItem> newItems) {
+        this.items.clear();
+        this.items.addAll(newItems);
         notifyDataSetChanged();
     }
 
@@ -40,26 +30,22 @@ public class ReaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        if (viewType == ReaderItem.TYPE_TEXT) {
-            View view = inflater.inflate(R.layout.item_reader_text, parent, false);
-            return new TextViewHolder(view);
-        } else {
-            View view = inflater.inflate(R.layout.item_reader_image, parent, false);
-            return new ImageViewHolder(view);
+        if (viewType == ReaderItem.TYPE_IMAGE) {
+            return new ImageViewHolder(ItemReaderImageBinding.inflate(inflater, parent, false));
         }
+        return new TextViewHolder(ItemReaderTextBinding.inflate(inflater, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ReaderItem item = items.get(position);
-
-        if (holder instanceof TextViewHolder) {
-            ((TextViewHolder) holder).bind(item.getContent());
-        } else if (holder instanceof ImageViewHolder) {
-            ((ImageViewHolder) holder).bind(item.getContent());
+        if (holder instanceof ImageViewHolder) {
+            Glide.with(holder.itemView.getContext())
+                    .load(item.getContent())
+                    .into(((ImageViewHolder) holder).binding.ivReaderImage);
+        } else {
+            ((TextViewHolder) holder).binding.tvReaderContent.setText(item.getContent());
         }
-
-        holder.itemView.setOnClickListener(v -> clickListener.onPageClick());
     }
 
     @Override
@@ -67,28 +53,13 @@ public class ReaderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return items.size();
     }
 
-    static class TextViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvContent;
-
-        public TextViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvContent = itemView.findViewById(R.id.tvReaderContent);
-        }
-
-        public void bind(String text) {
-            tvContent.setText(text);
-        }
+    static class ImageViewHolder extends RecyclerView.ViewHolder {
+        ItemReaderImageBinding binding;
+        ImageViewHolder(ItemReaderImageBinding binding) { super(binding.getRoot()); this.binding = binding; }
     }
 
-    static class ImageViewHolder extends RecyclerView.ViewHolder {
-
-        public ImageViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ImageView ivImage = itemView.findViewById(R.id.ivReaderImage);
-        }
-
-        public void bind(String imageUrl) {
-            // Glide.with(itemView.getContext()).load(imageUrl).into(ivImage);
-        }
+    static class TextViewHolder extends RecyclerView.ViewHolder {
+        ItemReaderTextBinding binding;
+        TextViewHolder(ItemReaderTextBinding binding) { super(binding.getRoot()); this.binding = binding; }
     }
 }

@@ -20,15 +20,48 @@ services:
       - ./init-sql:/docker-entrypoint-initdb.d
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
+  backend:
+    build: ./monogatari-server
+    container_name: monogatari-server
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8443:8443"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      DB_USERNAME: root
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      SERVER_SSL_KEY_STORE: ${SERVER_SSL_KEY_STORE}
+      SERVER_SSL_KEY_STORE_PASSWORD: ${SERVER_SSL_KEY_STORE_PASSWORD}
+      SERVER_SSL_KEY_STORE_TYPE: ${SERVER_SSL_KEY_STORE_TYPE}
+      SERVER_SSL_KEY_ALIAS: ${SERVER_SSL_KEY_ALIAS}
+      STRIPE_API_KEY: ${STRIPE_API_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      STRIPE_PREMIUM_PRICE_ID: ${STRIPE_PREMIUM_PRICE_ID}
+      APP_BACKEND_URL: ${APP_BACKEND_URL}
+      APP_PAYMENT_SUCCESS_URL: ${APP_BACKEND_URL}/api/payments/success
+      APP_PAYMENT_CANCEL_URL: ${APP_BACKEND_URL}/api/payments/cancel
+      APP_OAUTH2_REDIRECT_URI: ${APP_OAUTH2_REDIRECT_URI}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      UPLOAD_DIR: ${UPLOAD_DIR}
+    volumes:
+      - ./monogatari-server/uploads:/app/uploads
+
   stripe-tunnel:
     image: stripe/stripe-cli:latest
     container_name: monogatari-stripe-cli
     command: >
-      listen --forward-to https://host.docker.internal:8443/api/payments/webhook 
+      listen --forward-to backend:8443/api/payments/webhook
       --skip-verify
       --api-key ${STRIPE_API_KEY}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
   ngrok:
     image: ngrok/ngrok:latest
@@ -36,15 +69,13 @@ services:
     restart: always
     environment:
       NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
-    ports:
-      - "4040:4040"
     command:
       - "http"
-      - "https://host.docker.internal:8443"
+      - "https://backend:8443"
       - "--domain=unconfederated-fernande-tegularly.ngrok-free.dev"
-      - "--host-header=rewrite" 
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - "--host-header=rewrite"
+    ports:
+      - "4040:4040"
 
 volumes:
   db_data:

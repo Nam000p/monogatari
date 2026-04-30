@@ -4,6 +4,8 @@ import com.monogatari.app.data.api.ReadingProgressApi;
 import com.monogatari.app.data.model.progress.ReadingProgressRequest;
 import com.monogatari.app.data.model.progress.ReadingProgressResponse;
 
+import java.util.List;
+
 import retrofit2.Call;
 
 public class ReadingProgressRepository {
@@ -19,5 +21,9 @@ public class ReadingProgressRepository {
 
     public Call<ReadingProgressResponse> getProgress(Long storyId) {
         return progressApi.getProgress(storyId);
+    }
+
+    public Call<List<ReadingProgressResponse>> getAllProgress() {
+        return progressApi.getAllProgress();
     }
 }

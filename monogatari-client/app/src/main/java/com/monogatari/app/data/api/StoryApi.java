@@ -23,7 +23,7 @@ public interface StoryApi {
     Call<StoryResponse> getStoryDetails(@Path("storyId") Long storyId);
 
     @GET("stories/genre/{genreId}")
-    Call<List<StoryResponse>> getStoriesByGenre(@Path("genreId") Long genreId);
+    Call<PageResponse<StoryResponse>> getStoriesByGenre(@Path("genreId") Long genreId);
 
     @GET("stories/{storyId}/chapters")
     Call<List<ChapterResponse>> getStoryChapters(@Path("storyId") Long storyId);

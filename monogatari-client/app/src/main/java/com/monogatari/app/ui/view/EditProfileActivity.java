@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -36,7 +37,7 @@ import retrofit2.Response;
 public class EditProfileActivity extends AppCompatActivity {
     private ActivityEditProfileBinding binding;
     private UserRepository userRepository;
-    private LocalDate selectedBirthDate;
+    private String selectedBirthDate;
 
     private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -72,15 +73,15 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void loadCurrentProfile() {
-        userRepository.getMyProfile().enqueue(new Callback<UserProfileResponse>() {
+        userRepository.getMyProfile().enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<UserProfileResponse> call, Response<UserProfileResponse> response) {
+            public void onResponse(@NonNull Call<UserProfileResponse> call, @NonNull Response<UserProfileResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     UserProfileResponse profile = response.body();
                     binding.etUsername.setText(profile.getUsername());
                     if (profile.getBirthDate() != null) {
                         selectedBirthDate = profile.getBirthDate();
-                        binding.etBirthDate.setText(selectedBirthDate.toString());
+                        binding.etBirthDate.setText(selectedBirthDate);
                     }
                     Glide.with(EditProfileActivity.this)
                             .load(profile.getAvatarUrl())
@@ -90,7 +91,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<UserProfileResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<UserProfileResponse> call, @NonNull Throwable t) {
                 Toast.makeText(EditProfileActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show();
             }
         });
@@ -122,9 +123,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
             binding.ivEditAvatar.setAlpha(0.5f);
 
-            userRepository.updateAvatar(body).enqueue(new Callback<UserProfileResponse>() {
+            userRepository.updateAvatar(body).enqueue(new Callback<>() {
                 @Override
-                public void onResponse(Call<UserProfileResponse> call, Response<UserProfileResponse> response) {
+                public void onResponse(@NonNull Call<UserProfileResponse> call, @NonNull Response<UserProfileResponse> response) {
                     binding.ivEditAvatar.setAlpha(1.0f);
                     if (response.isSuccessful()) {
                         Glide.with(EditProfileActivity.this).load(uri).circleCrop().into(binding.ivEditAvatar);
@@ -135,13 +136,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<UserProfileResponse> call, Throwable t) {
+                public void onFailure(@NonNull Call<UserProfileResponse> call, @NonNull Throwable t) {
                     binding.ivEditAvatar.setAlpha(1.0f);
                     Toast.makeText(EditProfileActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             Toast.makeText(this, "Error processing image", Toast.LENGTH_SHORT).show();
         }
     }
@@ -154,9 +155,9 @@ public class EditProfileActivity extends AppCompatActivity {
         request.setUsername(username);
         request.setBirthDate(selectedBirthDate);
 
-        userRepository.updateProfile(request).enqueue(new Callback<UserProfileResponse>() {
+        userRepository.updateProfile(request).enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<UserProfileResponse> call, Response<UserProfileResponse> response) {
+            public void onResponse(@NonNull Call<UserProfileResponse> call, @NonNull Response<UserProfileResponse> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(EditProfileActivity.this, "Profile updated!", Toast.LENGTH_SHORT).show();
                     finish();
@@ -164,7 +165,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<UserProfileResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<UserProfileResponse> call, @NonNull Throwable t) {
                 Toast.makeText(EditProfileActivity.this, "Update failed", Toast.LENGTH_SHORT).show();
             }
         });
@@ -178,9 +179,14 @@ public class EditProfileActivity extends AppCompatActivity {
             builder.setTheme(R.style.MaterialCalendarTheme);
         } catch (Exception ignored) {}
 
-        if (selectedBirthDate != null) {
-            long selection = selectedBirthDate.atStartOfDay(java.time.ZoneOffset.UTC).toInstant().toEpochMilli();
-            builder.setSelection(selection);
+        if (selectedBirthDate != null && !selectedBirthDate.isEmpty()) {
+            try {
+                LocalDate tempDate = LocalDate.parse(selectedBirthDate);
+                long selection = tempDate.atStartOfDay(java.time.ZoneOffset.UTC).toInstant().toEpochMilli();
+                builder.setSelection(selection);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
 
         final MaterialDatePicker<Long> picker = builder.build();
@@ -190,12 +196,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 java.util.Calendar calendar = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"));
                 calendar.setTimeInMillis(selection);
 
-                selectedBirthDate = LocalDate.of(
+                selectedBirthDate = String.format(java.util.Locale.US, "%04d-%02d-%02d",
                         calendar.get(java.util.Calendar.YEAR),
                         calendar.get(java.util.Calendar.MONTH) + 1,
                         calendar.get(java.util.Calendar.DAY_OF_MONTH)
                 );
-                binding.etBirthDate.setText(selectedBirthDate.toString());
+
+                binding.etBirthDate.setText(selectedBirthDate);
             }
         });
 
@@ -212,9 +219,9 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void deleteAccount() {
-        userRepository.deleteMyAccount().enqueue(new Callback<String>() {
+        userRepository.deleteMyAccount().enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
                 TokenManager.getInstance(EditProfileActivity.this).clearAll();
                 Intent intent = new Intent(EditProfileActivity.this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -223,7 +230,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
                 Toast.makeText(EditProfileActivity.this, "Delete failed", Toast.LENGTH_SHORT).show();
             }
         });

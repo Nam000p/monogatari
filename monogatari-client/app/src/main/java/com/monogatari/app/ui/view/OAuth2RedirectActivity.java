@@ -5,9 +5,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.monogatari.app.data.api.ApiClient;
+import com.monogatari.app.data.api.UserApi;
 import com.monogatari.app.data.local.TokenManager;
+import com.monogatari.app.data.model.user.UserProfileResponse;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class OAuth2RedirectActivity extends AppCompatActivity {
     @Override
@@ -30,18 +38,39 @@ public class OAuth2RedirectActivity extends AppCompatActivity {
 
         if (token != null && refreshToken != null) {
             TokenManager.getInstance(this).saveTokens(token, refreshToken);
-
-            Toast.makeText(this, "Login successful! Welcome to Monogatari.", Toast.LENGTH_SHORT).show();
-
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
+            Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
+            checkProfileAndNavigate();
         } else if (error != null) {
             navigateToLogin("Authentication failed: " + error);
         } else {
             navigateToLogin("Tokens not found in redirect.");
         }
+    }
+
+    private void checkProfileAndNavigate() {
+        UserApi userApi = ApiClient.getClient(this).create(UserApi.class);
+        userApi.getMyProfile().enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<UserProfileResponse> call, @NonNull Response<UserProfileResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String birthDate = response.body().getBirthDate();
+                    if (birthDate == null) {
+                        startActivity(new Intent(OAuth2RedirectActivity.this, BirthdayActivity.class));
+                    } else {
+                        startActivity(new Intent(OAuth2RedirectActivity.this, MainActivity.class));
+                    }
+                } else {
+                    startActivity(new Intent(OAuth2RedirectActivity.this, MainActivity.class));
+                }
+                finish();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UserProfileResponse> call, @NonNull Throwable t) {
+                startActivity(new Intent(OAuth2RedirectActivity.this, MainActivity.class));
+                finish();
+            }
+        });
     }
 
     private void navigateToLogin(String errorMessage) {

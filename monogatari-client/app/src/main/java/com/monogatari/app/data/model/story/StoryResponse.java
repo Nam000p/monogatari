@@ -14,6 +14,7 @@ public class StoryResponse implements Serializable {
     private String title;
     private String description;
     private String coverUrl;
+    private Long authorId;
     private String authorName;
     private StoryType type;
     private StoryStatus status;

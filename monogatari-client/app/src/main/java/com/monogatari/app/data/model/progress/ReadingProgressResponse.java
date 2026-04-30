@@ -1,6 +1,6 @@
 package com.monogatari.app.data.model.progress;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import lombok.Data;
 
@@ -13,5 +13,5 @@ public class ReadingProgressResponse {
 	private Float chapterNumber;
 	private String chapterTitle;
 	private Integer lastPage;
-	private LocalDateTime lastReadAt;
+	private Instant lastReadAt;
 }

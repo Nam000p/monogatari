@@ -22,7 +22,7 @@ public class StoryRepository {
         return storyApi.getStoryDetails(id);
     }
 
-    public Call<List<StoryResponse>> getStoriesByGenre(Long genreId) {
+    public Call<PageResponse<StoryResponse>> getStoriesByGenre(Long genreId) {
         return storyApi.getStoriesByGenre(genreId);
     }
 

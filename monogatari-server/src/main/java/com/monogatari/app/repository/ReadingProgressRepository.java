@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface ReadingProgressRepository extends JpaRepository<ReadingProgress, Long> {
     Optional<ReadingProgress> findByUserIdAndStoryId(Long userId, Long storyId);
     
-    List<ReadingProgressRepository> findByUserIdOrderByLastReadAtDesc(Long userId);
+    List<ReadingProgress> findAllByUserIdOrderByLastReadAtDesc(Long userId);
 }
