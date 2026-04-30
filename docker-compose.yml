@@ -59,7 +59,7 @@ services:
     image: stripe/stripe-cli:latest
     container_name: monogatari-stripe-cli
     command: >
-      listen --forward-to backend:8443/api/payments/webhook
+      listen --forward-to https://backend:8443/api/payments/webhook
       --skip-verify
       --api-key ${STRIPE_API_KEY}
 
@@ -72,7 +72,7 @@ services:
     command:
       - "http"
       - "https://backend:8443"
-      - "--domain=unconfederated-fernande-tegularly.ngrok-free.dev"
+      - "--url=unconfederated-fernande-tegularly.ngrok-free.dev"
       - "--host-header=rewrite"
     ports:
       - "4040:4040"
