@@ -43,6 +43,15 @@ local.properties
 .cxx
 capture.png
 
+# Compiled App Files
+*.apk
+*.ap_
+*.aab
+*.dm
+
+# Metadata files (Generated during build)
+output-metadata.json
+
 # Environment & Secrets (CRITICAL)
 application.properties
 application.yml
