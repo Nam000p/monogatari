@@ -72,8 +72,6 @@ services:
     command:
       - "http"
       - "https://backend:8443"
-      - "--url=unconfederated-fernande-tegularly.ngrok-free.dev"
-      - "--host-header=rewrite"
     ports:
       - "4040:4040"
 

@@ -3,7 +3,6 @@ package com.monogatari.app.ui.view;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -107,9 +106,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<UserProfileResponse> call, @NonNull Response<UserProfileResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     String birthDate = response.body().getBirthDate();
-
-                    Log.d("MONOGATARI_DEBUG", "BirthDate từ server: '" + birthDate + "'");
-
                     if (birthDate == null || birthDate.trim().isEmpty() || birthDate.equalsIgnoreCase("null")) {
                         startActivity(new Intent(LoginActivity.this, BirthdayActivity.class));
                     } else {
