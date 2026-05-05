@@ -1,5 +1,7 @@
 package com.monogatari.app.service;
 
+import com.google.genai.Client;
+import com.google.genai.types.GenerateContentResponse;
 import com.monogatari.app.dto.ai.AiRequest;
 import com.monogatari.app.dto.ai.AiResponse;
 import com.monogatari.app.entity.User;
@@ -8,22 +10,15 @@ import com.monogatari.app.exception.ApiRateLimitException;
 import com.monogatari.app.repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.messages.Message;
-import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.model.ChatModel;
-import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaidAiService extends BaseService {
-    private final ChatModel chatModel;
     private final UserService userService;
     private final SubscriptionRepository subscriptionRepository;
 
@@ -52,16 +47,18 @@ public class PaidAiService extends BaseService {
                 Task: Suggest stories, summarize plots, or discuss literature within the vintage theme.
                 """;
 
-        SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemText);
-        Message systemMessage = systemPromptTemplate.createMessage();
-        UserMessage userMessage = new UserMessage(request.getMessage());
-        Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
+        String fullPrompt = "System Instruction: " + systemText + "\n\nUser Message: " + request.getMessage();
 
         try {
-            String aiReply = chatModel.call(prompt).getResult().getOutput().getContent();
+            Client client = new Client();
+            GenerateContentResponse apiResponse = client.models.generateContent(
+                    "gemini-2.0-flash",
+                    fullPrompt,
+                    null
+            );
 
             AiResponse response = new AiResponse();
-            response.setReply(aiReply);
+            response.setReply(apiResponse.text());
             return response;
 
         } catch (Exception e) {
