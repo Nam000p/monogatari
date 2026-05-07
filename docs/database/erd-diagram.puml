@@ -1,174 +1,190 @@
-@startuml monogatari-app-erd
-title MONOGATARI APP - FULL ECOSYSTEM ERD
+@startuml
 !theme plain
-skinparam Linetype ortho
-skinparam nodesep 30
-skinparam ranksep 40
-skinparam shadowing false
-skinparam class {
-    BackgroundColor White
-    BorderColor Black
-    ArrowColor Black
+hide circle
+skinparam linetype ortho
+
+entity "users" as users {
+  * id : BIGINT <<PK>>
+  --
+  username : VARCHAR(255)
+  email : VARCHAR(100)
+  birth_date : DATE
+  password : VARCHAR(255)
+  avatar_url : TEXT
+  role : VARCHAR(20)
+  status : VARCHAR(20)
+  auth_provider : VARCHAR(20)
+  stripe_customer_id : VARCHAR(100)
+  created_at : TIMESTAMP
 }
 
-entity "User" as user {
-    *id: BIGINT <<PK>>
-    --
-    username: VARCHAR(50)
-    email: VARCHAR(100)
-    password: VARCHAR(255)
-    avatar_url: VARCHAR(255)
-    role: VARCHAR(20)
-    status: VARCHAR(20)
-    stripe_customer_id: VARCHAR(100)
-    premium_expired_date: TIMESTAMP
-    created_at: TIMESTAMP
+entity "authors" as authors {
+  * id : BIGINT <<PK>>
+  --
+  name : VARCHAR(100)
+  bio : TEXT
+  avatar_url : VARCHAR(255)
 }
 
-entity "SubscriptionPlan" as plan {
-    *id: BIGINT <<PK>>
-    --
-    name: VARCHAR(50)
-    description: TEXT
-    original_price: DECIMAL(10,2)
-    discount_price: DECIMAL(10,2)
-    duration_days: INT
-    is_active: BOOLEAN
+entity "genres" as genres {
+  * id : BIGINT <<PK>>
+  --
+  name : VARCHAR(50)
 }
 
-entity "Transaction" as transaction {
-    *id: BIGINT <<PK>>
-    --
-    user_id: BIGINT <<FK>>
-    plan_id: BIGINT <<FK>>
-    stripe_session_id: VARCHAR(255)
-    amount: DECIMAL(10,2)
-    currency: VARCHAR(10)
-    status: VARCHAR(20)
-    created_at: TIMESTAMP
+entity "otp_codes" as otp_codes {
+  * id : BIGINT <<PK>>
+  --
+  email : VARCHAR(100)
+  otp_code : VARCHAR(6)
+  purpose : VARCHAR(20)
+  expiry_date : TIMESTAMP
 }
 
-entity "Author" as author {
-    *id: BIGINT <<PK>>
-    --
-    name: VARCHAR(100)
-    bio: TEXT
-    avatar_url: VARCHAR(255)
+entity "refresh_tokens" as refresh_tokens {
+  * id : BIGINT <<PK>>
+  --
+  user_id : BIGINT <<FK>>
+  token : VARCHAR(255)
+  expiry_date : TIMESTAMP
 }
 
-entity "Story" as story {
-    *id: BIGINT <<PK>>
-    --
-    title: VARCHAR(255)
-    author_id: BIGINT <<FK>>
-    description: TEXT
-    cover_url: VARCHAR(255)
-    type: VARCHAR(20)
-    status: VARCHAR(20)
-    view_count: BIGINT
-    average_rating: DOUBLE
-    created_at: TIMESTAMP
-    updated_at: TIMESTAMP
+entity "subscriptions" as subscriptions {
+  * id : BIGINT <<PK>>
+  --
+  user_id : BIGINT <<FK>>
+  stripe_subscription_id : VARCHAR(100)
+  plan_type : VARCHAR(50)
+  status : VARCHAR(50)
+  current_period_start : TIMESTAMP
+  current_period_end : TIMESTAMP
+  cancel_at_period_end : BOOLEAN
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
 }
 
-entity "Genre" as genre {
-    *id: BIGINT <<PK>>
-    --
-    name: VARCHAR(50)
+entity "transactions" as transactions {
+  * id : BIGINT <<PK>>
+  --
+  user_id : BIGINT <<FK>>
+  stripe_invoice_id : VARCHAR(100)
+  stripe_payment_intent_id : VARCHAR(100)
+  amount : DECIMAL(10,2)
+  currency : VARCHAR(10)
+  status : VARCHAR(50)
+  created_at : TIMESTAMP
 }
 
-entity "Story_Genre" as story_genre {
-    *story_id: BIGINT <<FK, PK>>
-    *genre_id: BIGINT <<FK, PK>>
+entity "stories" as stories {
+  * id : BIGINT <<PK>>
+  --
+  title : VARCHAR(255)
+  author_id : BIGINT <<FK>>
+  description : TEXT
+  cover_url : VARCHAR(255)
+  type : VARCHAR(20)
+  status : VARCHAR(20)
+  age_limit : INT
+  view_count : BIGINT
+  average_rating : DOUBLE
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
 }
 
-entity "Chapter" as chapter {
-    *id: BIGINT <<PK>>
-    --
-    story_id: BIGINT <<FK>>
-    chapter_number: FLOAT
-    title: VARCHAR(255)
-    content: LONGTEXT
-    is_premium: BOOLEAN
-    created_at: TIMESTAMP
-    updated_at: TIMESTAMP
+entity "story_genre" as story_genre {
+  * story_id : BIGINT <<PK, FK>>
+  * genre_id : BIGINT <<PK, FK>>
+  --
 }
 
-entity "ChapterImage" as chapter_image {
-    *id: BIGINT <<PK>>
-    --
-    chapter_id: BIGINT <<FK>>
-    image_url: VARCHAR(255)
-    order_number: INT
+entity "chapters" as chapters {
+  * id : BIGINT <<PK>>
+  --
+  story_id : BIGINT <<FK>>
+  chapter_number : FLOAT
+  title : VARCHAR(255)
+  content : LONGTEXT
+  is_premium : BOOLEAN
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
 }
 
-entity "Follow" as follow {
-    *user_id: BIGINT <<FK, PK>>
-    *story_id: BIGINT <<FK, PK>>
-    --
-    created_at: TIMESTAMP
+entity "chapter_images" as chapter_images {
+  * id : BIGINT <<PK>>
+  --
+  chapter_id : BIGINT <<FK>>
+  image_url : VARCHAR(255)
+  order_number : INT
 }
 
-entity "Rating" as rating {
-    *id: BIGINT <<PK>>
-    --
-    user_id: BIGINT <<FK>>
-    story_id: BIGINT <<FK>>
-    score: INT <<1 to 5>>
-    review_text: TEXT
-    created_at: TIMESTAMP
+entity "follows" as follows {
+  * user_id : BIGINT <<PK, FK>>
+  * story_id : BIGINT <<PK, FK>>
+  --
+  created_at : TIMESTAMP
 }
 
-entity "Comment" as comment {
-    *id: BIGINT <<PK>>
-    --
-    user_id: BIGINT <<FK>>
-    chapter_id: BIGINT <<FK>>
-    content: TEXT
-    created_at: TIMESTAMP
+entity "ratings" as ratings {
+  * id : BIGINT <<PK>>
+  --
+  user_id : BIGINT <<FK>>
+  story_id : BIGINT <<FK>>
+  score : INT
+  review_text : TEXT
+  created_at : TIMESTAMP
 }
 
-entity "Notification" as notification {
-    *id: BIGINT <<PK>>
-    --
-    user_id: BIGINT <<FK>>
-    title: VARCHAR(255)
-    message: TEXT
-    target_type: VARCHAR(20)
-    target_id: BIGINT
-    is_read: BOOLEAN
-    created_at: TIMESTAMP
+entity "comments" as comments {
+  * id : BIGINT <<PK>>
+  --
+  user_id : BIGINT <<FK>>
+  chapter_id : BIGINT <<FK>>
+  content : TEXT
+  created_at : TIMESTAMP
 }
 
-entity "ReadingProgress" as progress {
-    *id: BIGINT <<PK>>
-    --
-    user_id: BIGINT <<FK>>
-    story_id: BIGINT <<FK>>
-    chapter_id: BIGINT <<FK>>
-    last_read_page: INT
-    last_read_at: TIMESTAMP
+entity "notifications" as notifications {
+  * id : BIGINT <<PK>>
+  --
+  user_id : BIGINT <<FK>>
+  title : VARCHAR(255)
+  message : TEXT
+  target_type : VARCHAR(20)
+  target_id : BIGINT
+  is_read : BOOLEAN
+  created_at : TIMESTAMP
 }
 
-' Relationships
-user ||--o{ transaction
-plan ||--o{ transaction
-user ||--o{ follow
-user ||--o{ notification
-user ||--o{ rating
-user ||--o{ comment
-user ||--o{ progress
+entity "reading_progress" as reading_progress {
+  * id : BIGINT <<PK>>
+  --
+  user_id : BIGINT <<FK>>
+  story_id : BIGINT <<FK>>
+  chapter_id : BIGINT <<FK>>
+  last_read_page : INT
+  last_read_at : TIMESTAMP
+}
 
-author ||--o{ story
-story ||--o{ chapter
-story ||--o{ follow
-story ||--o{ rating
-story ||--o{ progress
-story }o--o{ genre
-(story, genre) .. story_genre
+users ||--|| refresh_tokens
+users ||--o{ subscriptions
+users ||--o{ transactions
+users ||--o{ follows
+users ||--o{ ratings
+users ||--o{ comments
+users ||--o{ notifications
+users ||--o{ reading_progress
 
-chapter ||--o{ chapter_image
-chapter ||--o{ comment
-chapter ||--o{ progress
+authors ||--o{ stories
 
-@endum
+stories ||--o{ story_genre
+genres ||--o{ story_genre
+
+stories ||--o{ follows
+stories ||--o{ ratings
+stories ||--o{ chapters
+stories ||--o{ reading_progress
+
+chapters ||--o{ chapter_images
+chapters ||--o{ comments
+chapters ||--o{ reading_progress
+@enduml

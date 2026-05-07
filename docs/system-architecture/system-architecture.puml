@@ -34,7 +34,6 @@ node "Local Area Network (LAN)" #White {
 package "Android Mobile Client (Java)" #LightBlue {
     [Retrofit Client] as Retrofit
     [Repository (Data Strategy)] as AndroidRepo
-    database "Room DB (Local Cache)" as Room
     [ViewModel (State Management)] as VM
     [UI Layer (Activity/Fragment)] as UI
 }
@@ -53,7 +52,6 @@ Controller <-down-> API
 ' Client-side flows
 API <-down-> Retrofit
 Retrofit <-down-> AndroidRepo
-AndroidRepo <-left-> Room : "Sync & Offline"
 AndroidRepo <-down-> VM
 VM <-down-> UI
 
