@@ -69,6 +69,8 @@ public class LoginActivity extends AppCompatActivity {
             authViewModel.login(request);
         });
 
+        binding.tvForgot.setOnClickListener(v -> startActivity(new Intent(this, EmailInputActivity.class)));
+
         binding.btnGoogle.setOnClickListener(v -> {
             String oauthUrl = "https://unconfederated-fernande-tegularly.ngrok-free.dev/oauth2/authorization/google";
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(oauthUrl));
